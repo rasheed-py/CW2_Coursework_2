@@ -4,7 +4,7 @@ from authy.security import validate_username, validate_password, register_user, 
 
 # Page configuration
 st.set_page_config(
-    page_title="A.R.G.U.S.",
+    page_title=".R.G.U.S.",
     page_icon="🅰️",
     layout="wide"
 )
@@ -105,7 +105,7 @@ def main():
         show_login_page()
     else:
         # Redirect to dashboard page
-        st.switch_page("pages\dashboard.py")
+        st.switch_page("pages\1_dash.py")
 
 
 if __name__ == "__main__":
