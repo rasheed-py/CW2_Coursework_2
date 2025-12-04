@@ -105,7 +105,7 @@ def main():
         show_login_page()
     else:
         # Redirect to dashboard page
-        st.switch_page("pages\1_dash.py")
+        st.switch_page("pages\dash.py")
 
 
 if __name__ == "__main__":
