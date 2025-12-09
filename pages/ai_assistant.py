@@ -5,12 +5,14 @@ from arg_database.data_loader import (
 )
 
 
-GEMINI_API_KEY = "AIzaSyAvA1-igsmdbSLfqV4JGQCQDYGmXva3wSY"
-
+import os
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+from dotenv import load_dotenv
+load_dotenv()
 
 # Set up the page configuration
 st.set_page_config(
-    page_title="AI Assistant",
+    page_title="AI ASSISTANT \" GIDEON \" ",
     page_icon="🤖",
     layout="wide"
 )
