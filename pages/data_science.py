@@ -26,17 +26,16 @@ if st.session_state.role not in ["user", "data_scientist"]:
     st.stop()
 
 # Create sidebar with navigation
-st.sidebar.title("Navigation")
-st.sidebar.markdown("---")
+st.sidebar.title("ARG NAVIGATION💢")
 st.sidebar.write(f"**User:** {st.session_state.username}")
 st.sidebar.write(f"**Role:** {st.session_state.role}")
-st.sidebar.markdown("---")
+
 
 # Add navigation links
-st.sidebar.page_link("pages/dash.py", label="Dashboard", icon="🏠")
+st.sidebar.page_link("pages/dash.py", label="Dashboard")
 if st.session_state.role == "user":
-    st.sidebar.page_link("pages/cybersecurity.py", label="Cybersecurity", icon="🛡️")
-    st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations", icon="💻")
+    st.sidebar.page_link("pages/data_science.py", label="Data Science")
+    st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations")
 
 st.sidebar.markdown("---")
 
@@ -45,7 +44,7 @@ if st.sidebar.button("Logout", use_container_width=True):
     st.session_state.logged_in = False
     st.session_state.username = None
     st.session_state.role = None
-    st.switch_page("login.py")
+    st.switch_page("arg_app.py")
 
 # Load dataset metadata from database
 df = load_datasets_metadata()

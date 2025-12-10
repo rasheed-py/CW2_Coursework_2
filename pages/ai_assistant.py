@@ -12,7 +12,7 @@ load_dotenv()
 
 # Set up the page configuration
 st.set_page_config(
-    page_title="AI ASSISTANT \" GIDEON \" ",
+    page_title="AI Assistant",
     page_icon="🤖",
     layout="wide"
 )
@@ -23,13 +23,16 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.stop()
 
 # Create sidebar with navigation
-st.sidebar.title("Navigation")
-st.sidebar.markdown("---")
+st.sidebar.title("ARG NAVIGATION💢")
 st.sidebar.write(f"**User:** {st.session_state.username}")
 st.sidebar.write(f"**Role:** {st.session_state.role}")
-st.sidebar.markdown("---")
 
-st.sidebar.page_link("pages/dash.py", label="Dashboard", icon="🏠")
+
+# Add navigation links
+st.sidebar.page_link("pages/dash.py", label="Dashboard")
+if st.session_state.role == "user":
+    st.sidebar.page_link("pages/data_science.py", label="Data Science")
+    st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations")
 
 st.sidebar.markdown("---")
 
@@ -38,12 +41,12 @@ if st.sidebar.button("Logout", use_container_width=True):
     st.session_state.logged_in = False
     st.session_state.username = None
     st.session_state.role = None
-    st.switch_page("login.py")
+    st.switch_page("arg_app.py")
 
 # Main page content
-st.title("AI Assistant")
-st.markdown("### Ask questions about your data")
-st.markdown("---")
+st.title("AI ASSISTANT \" GIDEON \" 🗣️")
+st.markdown("### Ask questions about ARGUS data")
+
 
 # Initialize chat history in session state
 if "chat_history" not in st.session_state:

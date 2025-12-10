@@ -9,36 +9,34 @@ st.set_page_config(
 
 # Check if user is logged in
 if "logged_in" not in st.session_state or not st.session_state.logged_in:
-    st.error("⚠️ Please login first")
+    st.error(" Please login first")
     st.stop()
 
 # Sidebar navigation
-st.sidebar.title("🎯 Navigation")
-st.sidebar.markdown("---")
-st.sidebar.write(f"**👤 User:** {st.session_state.username}")
-st.sidebar.write(f"**🎭 Role:** {st.session_state.role}")
-st.sidebar.markdown("---")
+st.sidebar.title("ARG NAVIGATION💢")
+st.sidebar.write(f" User: {st.session_state.username}")
+st.sidebar.write(f" Role: {st.session_state.role}")
 
 # Navigation links based on role
 if st.session_state.role == "user":
-    st.sidebar.page_link("pages/cybersecurity.py", label="🛡️ Cybersecurity", icon="🛡️")
-    st.sidebar.page_link("pages/data_science.py", label="📊 Data Science", icon="📊")
-    st.sidebar.page_link("pages/IT_tickets.py", label="💻 IT Operations", icon="💻")
+    st.sidebar.page_link("pages/cybersecurity.py", label="Cybersecurity")
+    st.sidebar.page_link("pages/data_science.py", label="Data Science")
+    st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations")
 elif st.session_state.role == "cybersecurity":
-    st.sidebar.page_link("pages/cybersecurity.py", label="🛡️ Cybersecurity Dashboard", icon="🛡️")
+    st.sidebar.page_link("pages/cybersecurity.py", label=" Cybersecurity Dashboard")
 elif st.session_state.role == "data_scientist":
-    st.sidebar.page_link("pages/data_science.py", label="📊 Data Science Dashboard", icon="📊")
+    st.sidebar.page_link("pages/data_science.py", label="Data Science Dashboard")
 elif st.session_state.role == "it_admin":
-    st.sidebar.page_link("pages/IT_tickets.py", label="💻 IT Operations Dashboard", icon="💻")
+    st.sidebar.page_link("pages/IT_tickets.py", label=" IT Operations Dashboard")
 
 st.sidebar.markdown("---")
 
 # Logout button
-if st.sidebar.button("🚪 Logout", use_container_width=True):
+if st.sidebar.button(" Logout", use_container_width=True):
     st.session_state.logged_in = False
     st.session_state.username = None
     st.session_state.role = None
-    st.switch_page("login.py")
+    st.switch_page("arg_app.py")
 
 # Main content
 st.title(f"Welcome, {st.session_state.username}! 👋")
@@ -46,7 +44,7 @@ st.markdown("---")
 
 # Role-specific welcome
 if st.session_state.role == "user":
-    st.subheader("👤 General User Dashboard")
+    st.subheader("General User Dashboard")
     st.info("You have full access to all domains")
 
     col1, col2, col3 = st.columns(3)
@@ -88,4 +86,4 @@ elif st.session_state.role == "it_admin":
         st.switch_page("pages/IT_tickets.py")
 
 st.markdown("---")
-st.caption("A.R.G.U.S. - Advanced Research Government Unified System")
+st.caption("A.R.G.U.S. - Advanced Research Group United Support")
