@@ -1,6 +1,8 @@
 import streamlit as st
 from arg_database.connection import setup_database
 from authy.security import validate_username, validate_password, register_user, login_user
+from pathlib import Path
+import base64
 
 # Page configuration
 st.set_page_config(
@@ -20,6 +22,59 @@ if "username" not in st.session_state:
 if "role" not in st.session_state:
     st.session_state.role = None
 
+# YOUR IMAGE PATH HERE
+image_path = "backdrop.jpg"  # Change this to your image path
+
+# Check if image exists and apply background
+if Path(image_path).exists():
+    # Read the image as bytes
+    with open(image_path, "rb") as f:
+        image_bytes = f.read()
+
+    # Determine MIME type
+    if image_path.lower().endswith(('.png')):
+        mime = "image/png"
+    elif image_path.lower().endswith(('.jpg', '.jpeg')):
+        mime = "image/jpeg"
+    elif image_path.lower().endswith(('.gif')):
+        mime = "image/gif"
+    else:
+        mime = "image/jpeg"
+
+    encoded = base64.b64encode(image_bytes).decode()
+
+    # Inject CSS with the image
+    st.markdown(
+        f"""
+        <style>
+        /* Target the main app container */
+        .stApp {{
+           background-image: url("data:{mime};base64,{encoded}");
+            background-size: cover;  /* Options: cover, contain, 100% 100%, auto */
+            background-position: center center;  /* Options: top, bottom, left, right, center */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+
+        /* Make content readable */
+        [data-testid="stVerticalBlock"] > [style*="flex-direction: column;"] > [data-testid="stVerticalBlock"] {{
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+        }}
+
+        header {{
+            background: transparent !important;
+        }}
+
+        [data-testid="stToolbar"] {{
+            display: none;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 def show_login_page():
     """Display login and registration page"""
@@ -36,14 +91,14 @@ def show_login_page():
         st.markdown("---")
 
         # Create tabs for Login and Register
-        tab1, tab2 = st.tabs(["🔑 Login", "📝 Register"])
+        tab1, tab2 = st.tabs([" Login", " Register"])
 
         # Login Tab
         with tab1:
             with st.form("login_form"):
                 username = st.text_input("Username", placeholder="Enter your username")
                 password = st.text_input("Password", type="password", placeholder="Enter your password")
-                submit = st.form_submit_button("🚀 Login", use_container_width=True)
+                submit = st.form_submit_button(" Login", use_container_width=True)
 
                 if submit:
                     if not username or not password:

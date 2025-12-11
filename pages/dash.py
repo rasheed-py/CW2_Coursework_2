@@ -17,6 +17,14 @@ st.sidebar.title("ARG NAVIGATION💢")
 st.sidebar.write(f" User: {st.session_state.username}")
 st.sidebar.write(f" Role: {st.session_state.role}")
 
+st.markdown(""" 
+<style>
+.stButton > button { 
+background-color: #4CAF50;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Navigation links based on role
 if st.session_state.role == "user":
     st.sidebar.page_link("pages/cybersecurity.py", label="Cybersecurity")
@@ -39,48 +47,56 @@ if st.sidebar.button(" Logout", use_container_width=True):
     st.switch_page("arg_app.py")
 
 # Main content
-st.title(f"Welcome, {st.session_state.username}! 👋")
+st.title(f"WELCOME... {st.session_state.username}! ")
 st.markdown("---")
 
-# Role-specific welcome
+# Role-specific welcome - 2 TOP, 1 BOTTOM CENTERED
 if st.session_state.role == "user":
-    st.subheader("General User Dashboard")
+    st.subheader("AUTHORIZED User Dashboard")
     st.info("You have full access to all domains")
 
-    col1, col2, col3 = st.columns(3)
+    st.markdown("---")
 
-    with col1:
-        st.markdown("### 🛡️ Cybersecurity")
+    # Top row - 2 columns
+    top_col1, top_col2 = st.columns(2)
+
+    with top_col1:
+        st.markdown("### Cybersecurity")
         st.write("Monitor security incidents and threats")
-        if st.button("Go to Cybersecurity", use_container_width=True):
+        if st.button("Go to Cybersecurity", use_container_width=True, key="cyber"):
             st.switch_page("pages/cybersecurity.py")
 
-    with col2:
-        st.markdown("### 📊 Data Science")
+    with top_col2:
+        st.markdown("### Data Science")
         st.write("Manage and analyze datasets")
-        if st.button("Go to Data Science", use_container_width=True):
+        if st.button("Go to Data Science", use_container_width=True, key="data"):
             st.switch_page("pages/data_science.py")
 
-    with col3:
-        st.markdown("### 💻 IT Operations")
+    st.markdown("---")
+
+    # Bottom row - 1 centered column
+    bottom_left, bottom_center, bottom_right = st.columns([1, 2, 1])
+
+    with bottom_center:
+        st.markdown("###  IT Operations")
         st.write("Track IT tickets and performance")
-        if st.button("Go to IT Operations", use_container_width=True):
+        if st.button("Go to IT Operations", use_container_width=True, key="it"):
             st.switch_page("pages/IT_tickets.py")
 
 elif st.session_state.role == "cybersecurity":
-    st.subheader("🛡️ Cybersecurity Analyst")
+    st.subheader(" Cybersecurity Analyst")
     st.info("Access to incident management and threat analysis")
     if st.button("Go to Your Dashboard", use_container_width=True):
         st.switch_page("pages/cybersecurity.py")
 
 elif st.session_state.role == "data_scientist":
-    st.subheader("📊 Data Scientist")
+    st.subheader("Data Scientist")
     st.info("Access to dataset management and analytics")
     if st.button("Go to Your Dashboard", use_container_width=True):
         st.switch_page("pages/data_science.py")
 
 elif st.session_state.role == "it_admin":
-    st.subheader("💻 IT Administrator")
+    st.subheader("IT Administrator")
     st.info("Access to ticket management and performance monitoring")
     if st.button("Go to Your Dashboard", use_container_width=True):
         st.switch_page("pages/IT_tickets.py")
