@@ -14,8 +14,7 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.error(" Please login first")
     st.stop()
 
-
-image_path = "imgs/crimsoire.png"
+image_path = "imgs/matte.jpg"
 
 # Check if image exists and apply background
 if Path(image_path).exists():
@@ -35,33 +34,27 @@ if Path(image_path).exists():
 
     encoded = base64.b64encode(image_bytes).decode()
 
-    # Inject CSS with the image
+    # Minimal CSS - just background and content overlay
     st.markdown(
         f"""
         <style>
-        /* Target the main app container */
+        /* Background on whole app */
         .stApp {{
-           background-image: url("data:{mime};base64,{encoded}");
-            background-size: cover;  /* Options: cover, contain, 100% 100%, auto */
-            background-position: center center;  /* Options: top, bottom, left, right, center */
+            background-image: url("data:{mime};base64,{encoded}");
+            background-size: cover;
+            background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
 
-        /* Make content readable */
-        [data-testid="stVerticalBlock"] > [style*="flex-direction: column;"] > [data-testid="stVerticalBlock"] {{
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 10px;
+        /* Main content readable */
+        .main .block-container {{
+            background: rgba(255, 255, 255, 0.9) !important;
+            padding: 2rem !important;
+            border-radius: 10px !important;
         }}
 
-        header {{
-            background: transparent !important;
-        }}
-
-        [data-testid="stToolbar"] {{
-            display: none;
-        }}
+        /* Don't mess with sidebar at all - let it be default */
 
         </style>
         """,
