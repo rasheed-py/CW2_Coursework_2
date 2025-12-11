@@ -19,8 +19,14 @@ st.sidebar.write(f" Role: {st.session_state.role}")
 
 st.markdown(""" 
 <style>
-.stButton > button { 
-background-color: #4CAF50;
+.stButton > button {
+    border: 2px solid #DC143C;
+}
+        
+.stButton > button:hover {
+    background-color: #DC143C;
+    color: white;
+    border: 2px solid #DC143C;
 }
 </style>
 """, unsafe_allow_html=True)

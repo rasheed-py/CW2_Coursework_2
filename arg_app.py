@@ -23,7 +23,7 @@ if "role" not in st.session_state:
     st.session_state.role = None
 
 # YOUR IMAGE PATH HERE
-image_path = "backdrop.jpg"  # Change this to your image path
+image_path = "imgs/backdrop.jpg"  # Change this to your image path
 
 # Check if image exists and apply background
 if Path(image_path).exists():
@@ -70,10 +70,25 @@ if Path(image_path).exists():
         [data-testid="stToolbar"] {{
             display: none;
         }}
+        
         </style>
         """,
         unsafe_allow_html=True
     )
+
+st.markdown(""" 
+<style>
+.stButton > button {
+    border: 2px solid #DC143C;
+}
+
+.stButton > button:hover {
+    background-color: #DC143C;
+    color: white;
+    border: 2px solid #DC143C;
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 def show_login_page():
@@ -84,7 +99,7 @@ def show_login_page():
 
     with col2:
         # Logo
-        st.image("arg.png", width=150)
+        st.image("imgs/arg.png", width=150)
 
         st.title("🅰️.R.G.U.S.")
         st.markdown("### Secure Government Research")
