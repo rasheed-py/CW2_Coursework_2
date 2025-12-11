@@ -96,6 +96,7 @@ st.sidebar.page_link("pages/dash.py", label="Dashboard")
 if st.session_state.role == "user":
     st.sidebar.page_link("pages/data_science.py", label="Data Science")
     st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations")
+    st.sidebar.page_link("pages/ai_assistant.py", label="AI assistant")
 
 st.sidebar.markdown("---")
 

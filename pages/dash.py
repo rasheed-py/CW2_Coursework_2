@@ -85,12 +85,16 @@ if st.session_state.role == "user":
     st.sidebar.page_link("pages/cybersecurity.py", label="Cybersecurity")
     st.sidebar.page_link("pages/data_science.py", label="Data Science")
     st.sidebar.page_link("pages/IT_tickets.py", label="IT Operations")
+    st.sidebar.page_link("pages/ai_assistant.py", label="AI assistant")
 elif st.session_state.role == "cybersecurity":
     st.sidebar.page_link("pages/cybersecurity.py", label=" Cybersecurity Dashboard")
+    st.sidebar.page_link("pages/ai_assistant.py", label="AI assistant")
 elif st.session_state.role == "data_scientist":
     st.sidebar.page_link("pages/data_science.py", label="Data Science Dashboard")
+    st.sidebar.page_link("pages/ai_assistant.py", label="AI assistant")
 elif st.session_state.role == "it_admin":
     st.sidebar.page_link("pages/IT_tickets.py", label=" IT Operations Dashboard")
+    st.sidebar.page_link("pages/ai_assistant.py", label="AI assistant")
 
 st.sidebar.markdown("---")
 
