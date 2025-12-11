@@ -1,5 +1,7 @@
 import streamlit as st
 import plotly.express as px
+from pathlib import Path
+import base64
 import plotly.graph_objects as go
 from datetime import datetime
 from arg_database.data_loader import (
@@ -22,6 +24,73 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
 if st.session_state.role not in ["user", "data_scientist"]:
     st.error("Access Denied - You don't have permission to view this page")
     st.stop()
+
+image_path = "imgs/matte.jpg"
+
+# Check if image exists and apply background
+if Path(image_path).exists():
+    # Read the image as bytes
+    with open(image_path, "rb") as f:
+        image_bytes = f.read()
+
+    # Determine MIME type
+    if image_path.lower().endswith(('.png')):
+        mime = "image/png"
+    elif image_path.lower().endswith(('.jpg', '.jpeg')):
+        mime = "image/jpeg"
+    elif image_path.lower().endswith(('.gif')):
+        mime = "image/gif"
+    else:
+        mime = "image/jpeg"
+
+    encoded = base64.b64encode(image_bytes).decode()
+
+    # Inject CSS with the image
+    st.markdown(
+        f"""
+        <style>
+        /* Target the main app container */
+        .stApp {{
+           background-image: url("data:{mime};base64,{encoded}");
+            background-size: cover;  /* Options: cover, contain, 100% 100%, auto */
+            background-position: center center;  /* Options: top, bottom, left, right, center */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+
+        /* Make content readable */
+        [data-testid="stVerticalBlock"] > [style*="flex-direction: column;"] > [data-testid="stVerticalBlock"] {{
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+        }}
+
+        header {{
+            background: transparent !important;
+        }}
+
+        [data-testid="stToolbar"] {{
+            display: none;
+        }}
+
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+st.markdown(""" 
+<style>
+.stButton > button {
+    border: 2px solid #DC143C;
+}
+
+.stButton > button:hover {
+    background-color: #DC143C;
+    color: white;
+    border: 2px solid #DC143C;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # Create sidebar with navigation
 st.sidebar.title("ARG NAVIGATION💢")

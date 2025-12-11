@@ -22,8 +22,8 @@ if "username" not in st.session_state:
 if "role" not in st.session_state:
     st.session_state.role = None
 
-# YOUR IMAGE PATH HERE
-image_path = "imgs/backdrop.jpg"  # Change this to your image path
+
+image_path = "imgs/backdrop.jpg"
 
 # Check if image exists and apply background
 if Path(image_path).exists():

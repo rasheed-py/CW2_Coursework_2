@@ -14,8 +14,8 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.error(" Please login first")
     st.stop()
 
-# YOUR IMAGE PATH HERE
-image_path = "imgs/crimsoire.png"  # Change this to your image path
+
+image_path = "imgs/crimsoire.png"
 
 # Check if image exists and apply background
 if Path(image_path).exists():
