@@ -8,14 +8,14 @@ from arg_database.data_loader import (
     load_datasets_metadata, create_dataset, update_dataset, delete_dataset
 )
 
-# Set up the page configuration
+# Configure the Streamlit page settings
 st.set_page_config(
     page_title="Data Science Dashboard",
     page_icon="📊",
     layout="wide"
 )
 
-# Check if the user is logged in
+# Check if user is logged in - redirect to login if not
 if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.error("Please login first")
     st.stop()
@@ -25,15 +25,16 @@ if st.session_state.role not in ["user", "data_scientist"]:
     st.error("Access Denied - You don't have permission to view this page")
     st.stop()
 
+# Path to background image
 image_path = "imgs/matte.jpg"
 
-# Check if image exists and apply background
+# Apply background image styling if the file exists
 if Path(image_path).exists():
-    # Read the image as bytes
+    # Read the image file as bytes
     with open(image_path, "rb") as f:
         image_bytes = f.read()
 
-    # Determine MIME type
+    # Determine MIME type based on file extension
     if image_path.lower().endswith(('.png')):
         mime = "image/png"
     elif image_path.lower().endswith(('.jpg', '.jpeg')):
@@ -43,9 +44,10 @@ if Path(image_path).exists():
     else:
         mime = "image/jpeg"
 
+    # Encode image to base64 for embedding in CSS
     encoded = base64.b64encode(image_bytes).decode()
 
-    # Minimal CSS - just background and content overlay
+    # Inject custom CSS with background image
     st.markdown(
         f"""
         <style>
@@ -72,6 +74,7 @@ if Path(image_path).exists():
         unsafe_allow_html=True
     )
 
+# Add custom button styling
 st.markdown(""" 
 <style>
 .stButton > button {
@@ -91,7 +94,7 @@ st.sidebar.title("ARG NAVIGATION💢")
 st.sidebar.write(f"**User:** {st.session_state.username}")
 st.sidebar.write(f"**Role:** {st.session_state.role}")
 
-# Add navigation links
+# Add navigation links based on user role
 st.sidebar.page_link("pages/dash.py", label="Dashboard")
 if st.session_state.role == "user":
     st.sidebar.page_link("pages/cybersecurity.py", label="Cybersecurity")
@@ -100,7 +103,7 @@ if st.session_state.role == "user":
 
 st.sidebar.markdown("---")
 
-# Logout button functionality
+# Logout button - clears session state and returns to login
 if st.sidebar.button("Logout", use_container_width=True):
     st.session_state.logged_in = False
     st.session_state.username = None
@@ -125,24 +128,27 @@ with row1_col2:
 
 row2_col1, row2_col2 = st.columns(2)
 with row2_col1:
+    # Estimate storage size (assuming 1KB per row)
     storage_gb = (total_rows * 1000) / (1024 ** 3)
     st.metric("Est. Storage", f"{storage_gb:.2f} GB")
 with row2_col2:
+    # Count unique data sources
     sources = df['uploaded_by'].nunique()
     st.metric("Data Sources", sources)
 
 st.markdown("---")
 
-# Create tabs - only Datasets and Analysis
+# Create tabs for dataset management and governance analysis
 tab1, tab2 = st.tabs(["Dataset Management", "Governance Analysis"])
 
 # Tab 1: Dataset Management
 with tab1:
-    # Add new dataset form (always visible)
+    # Form to add new dataset
     st.markdown("#### Add New Dataset")
     with st.form("create_dataset"):
         col1, col2, col3 = st.columns(3)
         with col1:
+            # Generate next available dataset ID
             new_id = st.number_input("Dataset ID", min_value=1, value=int(df['dataset_id'].max() + 1))
             new_name = st.text_input("Dataset Name")
         with col2:
@@ -152,6 +158,7 @@ with tab1:
             new_uploaded_by = st.selectbox("Uploaded By", ["data_scientist", "cyber_admin", "it_admin"])
             new_upload_date = st.date_input("Upload Date", value=datetime.now())
 
+        # Submit button - creates dataset in database
         if st.form_submit_button("Add Dataset"):
             create_dataset(new_id, new_name, new_rows, new_columns, new_uploaded_by, str(new_upload_date))
             st.success("Dataset added successfully")
@@ -159,52 +166,60 @@ with tab1:
 
     st.markdown("---")
 
-    # Display all datasets
+    # Display all datasets in a table
     st.markdown("#### All Datasets")
     st.dataframe(df, use_container_width=True)
 
     st.markdown("---")
 
-    # Update and Delete sections
+    # Update and Delete sections side by side
     col1, col2 = st.columns(2)
 
     with col1:
+        # Update dataset form
         st.markdown("#### Update Dataset")
         update_id = st.selectbox("Select Dataset ID", df['dataset_id'].values)
+        # Get the selected dataset's current data
         dataset = df[df['dataset_id'] == update_id].iloc[0]
 
         with st.form("update_dataset"):
+            # Pre-populate fields with current values
             upd_name = st.text_input("Name", value=dataset['name'])
             upd_rows = st.number_input("Rows", value=int(dataset['rows']))
             upd_columns = st.number_input("Columns", value=int(dataset['columns']))
 
+            # Submit button - updates dataset in database
             if st.form_submit_button("Update"):
                 update_dataset(update_id, name=upd_name, rows=upd_rows, columns=upd_columns)
                 st.success("Dataset updated successfully")
                 st.rerun()
 
     with col2:
+        # Delete dataset section
         st.markdown("#### Delete Dataset")
         delete_id = st.selectbox("Select Dataset ID to Delete", df['dataset_id'].values, key="delete")
         st.markdown("")
         st.markdown("")
+        # Delete button - removes dataset from database
         if st.button("Delete Dataset", type="primary"):
             delete_dataset(delete_id)
             st.success("Dataset deleted successfully")
             st.rerun()
 
-# Tab 2: Analysis
+# Tab 2: Governance Analysis
 with tab2:
-    # Resource consumption at the top
+    # Resource consumption analysis - highest priority insight
     st.markdown("#### High-Value Insight: Resource Consumption")
 
     resource_col1, resource_col2 = st.columns([1, 2])
 
     with resource_col1:
+        # Show top 3 largest datasets
         top_datasets = df.nlargest(3, 'rows')[['name', 'rows', 'uploaded_by']]
         st.dataframe(top_datasets, use_container_width=True)
 
     with resource_col2:
+        # Bar chart showing total rows by data source
         source_rows = df.groupby('uploaded_by')['rows'].sum().sort_values(ascending=False)
         fig = px.bar(x=source_rows.index, y=source_rows.values,
                      labels={'x': 'Source', 'y': 'Total Rows'},
@@ -216,23 +231,27 @@ with tab2:
     # Data governance recommendations
     st.markdown("#### Data Governance Recommendations")
 
+    # Identify datasets in the top 25% by size
     large_threshold = df['rows'].quantile(0.75)
     large_datasets = df[df['rows'] > large_threshold]
 
+    # Display archiving recommendation
     st.info(
         f"Archiving Policy Recommendation: {len(large_datasets)} datasets exceed the 75th percentile ({large_threshold:,.0f} rows) and should be considered for archiving or compression.")
 
+    # Show which datasets should be archived
     if len(large_datasets) > 0:
         st.dataframe(large_datasets[['name', 'rows', 'uploaded_by', 'upload_date']], use_container_width=True)
 
     st.markdown("---")
 
-    # Dataset statistics
+    # Dataset statistics visualizations
     st.markdown("#### Dataset Statistics")
 
     chart_col1, chart_col2 = st.columns(2)
 
     with chart_col1:
+        # Bar chart of rows per dataset
         fig1 = px.bar(df, x='name', y='rows',
                       title="Rows per Dataset",
                       labels={'name': 'Dataset', 'rows': 'Number of Rows'})
@@ -240,6 +259,7 @@ with tab2:
         st.plotly_chart(fig1, use_container_width=True)
 
     with chart_col2:
+        # Scatter plot showing dataset complexity (rows vs columns)
         fig2 = px.scatter(df, x='rows', y='columns', size='rows',
                           hover_data=['name'], title="Dataset Complexity",
                           labels={'rows': 'Number of Rows', 'columns': 'Number of Columns'})
@@ -249,6 +269,7 @@ with tab2:
 
     # Source dependency analysis
     st.markdown("#### Source Dependency Analysis")
+    # Aggregate statistics by data source
     total_by_source = df.groupby('uploaded_by').agg({
         'dataset_id': 'count',
         'rows': 'sum'

@@ -4,7 +4,7 @@ from authy.security import validate_username, validate_password, register_user, 
 from pathlib import Path
 import base64
 
-# Page configuration
+# Configure the Streamlit page settings
 st.set_page_config(
     page_title=".R.G.U.S.",
     page_icon="🅰️",
@@ -14,7 +14,7 @@ st.set_page_config(
 # Initialize database on first run
 setup_database()
 
-# Initialize session state
+# Initialize session state variables for authentication
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "username" not in st.session_state:
@@ -22,16 +22,16 @@ if "username" not in st.session_state:
 if "role" not in st.session_state:
     st.session_state.role = None
 
-
+# Path to background image
 image_path = "imgs/backdrop.jpg"
 
-# Check if image exists and apply background
+# Apply background image styling if the file exists
 if Path(image_path).exists():
-    # Read the image as bytes
+    # Read the image file as bytes
     with open(image_path, "rb") as f:
         image_bytes = f.read()
 
-    # Determine MIME type
+    # Determine MIME type based on file extension
     if image_path.lower().endswith(('.png')):
         mime = "image/png"
     elif image_path.lower().endswith(('.jpg', '.jpeg')):
@@ -41,9 +41,10 @@ if Path(image_path).exists():
     else:
         mime = "image/jpeg"
 
+    # Encode image to base64 for embedding in CSS
     encoded = base64.b64encode(image_bytes).decode()
 
-    # Inject CSS with the image
+    # Inject custom CSS with background image
     st.markdown(
         f"""
         <style>
@@ -70,12 +71,13 @@ if Path(image_path).exists():
         [data-testid="stToolbar"] {{
             display: none;
         }}
-        
+
         </style>
         """,
         unsafe_allow_html=True
     )
 
+# Add custom button styling
 st.markdown(""" 
 <style>
 .stButton > button {
@@ -94,13 +96,14 @@ st.markdown("""
 def show_login_page():
     """Display login and registration page"""
 
-    # Center columns
+    # Create centered layout with 3 columns
     col1, col2, col3 = st.columns([1, 2, 1])
 
     with col2:
-        # Logo
+        # Display logo
         st.image("imgs/arg.png", width=150)
 
+        # Page title and header
         st.title("🅰️.R.G.U.S.")
         st.markdown("### Secure Government Research")
         st.markdown("---")
@@ -111,16 +114,20 @@ def show_login_page():
         # Login Tab
         with tab1:
             with st.form("login_form"):
+                # Input fields for login
                 username = st.text_input("Username", placeholder="Enter your username")
                 password = st.text_input("Password", type="password", placeholder="Enter your password")
                 submit = st.form_submit_button(" Login", use_container_width=True)
 
+                # Handle login submission
                 if submit:
                     if not username or not password:
                         st.error("⚠️ Please fill in all fields")
                     else:
+                        # Attempt to authenticate user
                         success, result = login_user(username, password)
                         if success:
+                            # Set session state on successful login
                             st.session_state.logged_in = True
                             st.session_state.username = result['username']
                             st.session_state.role = result['role']
@@ -132,6 +139,7 @@ def show_login_page():
         # Register Tab
         with tab2:
             with st.form("register_form"):
+                # Input fields for registration
                 new_username = st.text_input("Username", key="reg_user",
                                              placeholder="Choose a username",
                                              help="3-20 alphanumeric characters")
@@ -145,23 +153,24 @@ def show_login_page():
                                     help="Choose your domain (select 'user' for general access)")
                 register = st.form_submit_button("✨ Create Account", use_container_width=True)
 
+                # Handle registration submission
                 if register:
                     if not new_username or not new_password or not confirm_password:
                         st.error("⚠️ Please fill in all fields")
                     elif new_password != confirm_password:
                         st.error("❌ Passwords do not match")
                     else:
-                        # Validate username
+                        # Validate username format
                         valid_user, user_msg = validate_username(new_username)
                         if not valid_user:
                             st.error(f"❌ {user_msg}")
                         else:
-                            # Validate password
+                            # Validate password strength
                             valid_pass, pass_msg = validate_password(new_password)
                             if not valid_pass:
                                 st.error(f"❌ {pass_msg}")
                             else:
-                                # Register user
+                                # Register user in database
                                 success, result = register_user(new_username, new_password, role)
                                 if success:
                                     st.success("✅ Registration successful! Please login.")
@@ -172,9 +181,10 @@ def show_login_page():
 def main():
     """Main application controller"""
     if not st.session_state.logged_in:
+        # Show login page if user is not authenticated
         show_login_page()
     else:
-        # Redirect to dashboard page
+        # Redirect to dashboard page if user is logged in
         st.switch_page("pages\dash.py")
 
 
